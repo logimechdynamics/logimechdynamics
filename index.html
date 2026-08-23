@@ -129,6 +129,37 @@
 </head>
 <body class="bg-gray-50 text-gray-900 font-sans antialiased overflow-x-hidden">
 
+    <!-- Solar Power Preloader -->
+<div id="preloader" class="fixed inset-0 z-[9999] bg-[#0f172a] flex flex-col items-center justify-center transition-opacity duration-700 ease-out">
+    <div class="relative flex items-center justify-center w-36 h-36 mb-6">
+        <!-- Outer Rotating Sun Rays -->
+        <div class="absolute inset-0 rounded-full border-2 border-dashed border-amber-400/40 animate-[spin_8s_linear_infinite]"></div>
+        
+        <!-- Counter-Rotating Energy Ring -->
+        <div class="absolute inset-3 rounded-full border border-brand-accent/40 animate-[spin_5s_linear_infinite_reverse]"></div>
+        
+        <!-- Pulsing Solar Core -->
+        <div class="relative w-16 h-16 bg-gradient-to-tr from-amber-500 to-yellow-300 rounded-full flex items-center justify-center shadow-[0_0_40px_rgba(245,158,11,0.75)] animate-pulse">
+            <!-- Energy Bolt Icon -->
+            <svg class="w-8 h-8 text-brand-dark fill-current" viewBox="0 0 20 20">
+                <path d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.574l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.574l7-10a1 1 0 011.12-.38z"/>
+            </svg>
+        </div>
+    </div>
+
+    <!-- Branding & Loading Status -->
+    <div class="text-center space-y-2">
+        <h3 class="text-white font-black tracking-widest text-lg sm:text-xl">LOGI MECH DYNAMICS<span class="text-brand-accent">.</span></h3>
+        <p class="text-xs font-bold uppercase tracking-widest text-gray-400">Powering Clean Energy...</p>
+        
+        <!-- Animated Solar Charging Bar -->
+        <div class="w-48 h-1.5 bg-slate-800 rounded-full overflow-hidden mx-auto mt-3 border border-white/10">
+            <div id="preloader-bar" class="h-full bg-gradient-to-r from-amber-400 via-brand-accent to-brand-green rounded-full transition-all duration-700 ease-out" style="width: 0%;"></div>
+        </div>
+    </div>
+</div>
+
+
     <!-- Navigation -->
     <nav class="fixed top-0 w-full bg-white/90 backdrop-blur-md shadow-sm z-50 transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex justify-between items-center gap-4">
@@ -1565,6 +1596,22 @@
         });
 
         revealElements.forEach(el => revealObserver.observe(el));
+   
+   // --- PRELOADER DISMISSAL ---
+window.addEventListener('load', () => {
+    const preloader = document.getElementById('preloader');
+    const bar = document.getElementById('preloader-bar');
+    
+    if (bar) bar.style.width = '100%';
+
+    setTimeout(() => {
+        if (preloader) {
+            preloader.classList.add('opacity-0', 'pointer-events-none');
+            setTimeout(() => preloader.remove(), 700);
+        }
+    }, 650);
+});
+
     </script>
 </body>
 </html>
