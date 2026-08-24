@@ -166,7 +166,8 @@
             
             <a href="#" class="flex items-center gap-2.5 sm:gap-3 text-xl lg:text-2xl font-black tracking-tighter text-brand-dark shrink-0 whitespace-nowrap">
     <img src="logimechdynamics.png" alt="Logi Mech Dynamics Logo" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full object-cover border border-gray-200 shadow-sm shrink-0">
-    <span>LOGI MECH DYNAMICS<span class="text-brand-accent">.</span></span>
+    <span>LOGI MECH DYNAMICS<span id="secret-dot" class="text-brand-accent cursor-pointer select-none">.</span>
+</span>
 </a>
 
             
@@ -1627,7 +1628,187 @@ window.addEventListener('load', () => {
     }, 650);
 });
 
+// --- 10 SECRET DEVELOPER EASTER EGG TRIGGERS ---
+document.addEventListener('DOMContentLoaded', () => {
+    const devModal = document.getElementById('dev-modal');
+    if (!devModal) return;
+
+    window.showDevModal = function() {
+        devModal.classList.remove('hidden');
+        devModal.classList.add('flex');
+        setTimeout(() => devModal.classList.remove('opacity-0'), 10);
+    };
+
+    window.closeDevModal = function() {
+        devModal.classList.add('opacity-0');
+        setTimeout(() => {
+            devModal.classList.add('hidden');
+            devModal.classList.remove('flex');
+        }, 300);
+    };
+
+    // Close on backdrop click
+    devModal.addEventListener('click', (e) => {
+        if (e.target === devModal) window.closeDevModal();
+    });
+
+    // Helper: ignore input if user is actively writing in a form
+    const isTypingInField = () => ['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName);
+
+    // TRIGGER 1: Type "magesh"
+    let typedWord = '';
+    window.addEventListener('keydown', (e) => {
+        if (isTypingInField()) return;
+        typedWord += e.key.toLowerCase();
+        if (typedWord.length > 6) typedWord = typedWord.slice(-6);
+        if (typedWord === 'magesh') {
+            window.showDevModal();
+            typedWord = '';
+        }
+    });
+
+    // TRIGGER 2: Hotkey Ctrl+Shift+M / Cmd+Shift+M
+    window.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 'm') {
+            e.preventDefault();
+            window.showDevModal();
+        }
+    });
+
+    // TRIGGER 3: Konami Code (Up Up Down Down Left Right Left Right B A)
+    const konamiCode = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+    let konamiIndex = 0;
+    window.addEventListener('keydown', (e) => {
+        if (isTypingInField()) return;
+        const key = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+        const expected = konamiCode[konamiIndex].length === 1 ? konamiCode[konamiIndex].toLowerCase() : konamiCode[konamiIndex];
+        if (key === expected) {
+            konamiIndex++;
+            if (konamiIndex === konamiCode.length) {
+                window.showDevModal();
+                konamiIndex = 0;
+            }
+        } else {
+            konamiIndex = 0;
+        }
+    });
+
+    // TRIGGER 4: 5 Clicks on Navbar Dot
+    const secretDot = document.getElementById('secret-dot') || document.querySelector('nav .text-brand-accent');
+    if (secretDot) {
+        let dotClicks = 0, dotTimer = null;
+        secretDot.addEventListener('click', (e) => {
+            e.preventDefault();
+            dotClicks++;
+            clearTimeout(dotTimer);
+            if (dotClicks >= 5) {
+                window.showDevModal();
+                dotClicks = 0;
+            } else {
+                dotTimer = setTimeout(() => { dotClicks = 0; }, 2000);
+            }
+        });
+    }
+
+    // TRIGGER 5: Triple-Click CEO Photo
+    const ceoImg = document.querySelector('img[alt*="Logeshwaren"]') || document.querySelector('#about img');
+    if (ceoImg) {
+        let imgClicks = 0, imgTimer = null;
+        ceoImg.addEventListener('click', () => {
+            imgClicks++;
+            clearTimeout(imgTimer);
+            if (imgClicks >= 3) {
+                window.showDevModal();
+                imgClicks = 0;
+            } else {
+                imgTimer = setTimeout(() => { imgClicks = 0; }, 1200);
+            }
+        });
+    }
+
+    // TRIGGER 6: Long Press (2.5s) on Nav Brand Logo
+    const navLogo = document.querySelector('nav a[href="#"]') || document.querySelector('nav a');
+    if (navLogo) {
+        let pressTimer = null;
+        const startPress = () => { pressTimer = setTimeout(() => window.showDevModal(), 2500); };
+        const cancelPress = () => clearTimeout(pressTimer);
+        
+        navLogo.addEventListener('mousedown', startPress);
+        navLogo.addEventListener('touchstart', startPress, { passive: true });
+        navLogo.addEventListener('mouseup', cancelPress);
+        navLogo.addEventListener('mouseleave', cancelPress);
+        navLogo.addEventListener('touchend', cancelPress);
+    }
+
+    // TRIGGER 7: Double Click on Footer Brand Title
+    const footerBrand = document.querySelector('footer .text-2xl');
+    if (footerBrand) {
+        footerBrand.classList.add('cursor-pointer', 'select-none');
+        footerBrand.addEventListener('dblclick', () => window.showDevModal());
+    }
+
+    // TRIGGER 8: 5 Clicks on Review Rating Badge
+    const avgRatingEl = document.getElementById('avg-rating-number');
+    if (avgRatingEl) {
+        let ratingClicks = 0, ratingTimer = null;
+        avgRatingEl.parentElement.classList.add('cursor-pointer');
+        avgRatingEl.parentElement.addEventListener('click', () => {
+            ratingClicks++;
+            clearTimeout(ratingTimer);
+            if (ratingClicks >= 5) {
+                window.showDevModal();
+                ratingClicks = 0;
+            } else {
+                ratingTimer = setTimeout(() => { ratingClicks = 0; }, 1800);
+            }
+        });
+    }
+
+    // TRIGGER 9: Console Function (F12 Console Command)
+    window.magesh = function() {
+        window.showDevModal();
+        return "⚡ Secret unlocked! Built by Magesh.";
+    };
+    window.unlockDev = window.magesh;
+
+    // TRIGGER 10: URL Hash Trigger (#magesh or #developer)
+    const checkUrlHash = () => {
+        const hash = window.location.hash.toLowerCase();
+        if (hash === '#magesh' || hash === '#developer') {
+            window.showDevModal();
+        }
+    };
+    checkUrlHash();
+    window.addEventListener('hashchange', checkUrlHash);
+});
+
+
+                        
+
     </script>
+
+               <!-- Secret Developer Easter Egg Modal -->
+<div id="dev-modal" class="fixed inset-0 z-[999] bg-black/80 backdrop-blur-md hidden items-center justify-center p-4 opacity-0 transition-opacity duration-300 select-none">
+    <div class="bg-slate-900 border border-brand-accent/40 text-white rounded-3xl p-8 max-w-sm w-full text-center relative shadow-[0_0_50px_rgba(59,130,246,0.3)]">
+        <button onclick="closeDevModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl font-bold focus:outline-none">&times;</button>
+        
+        <div class="w-16 h-16 bg-gradient-to-tr from-brand-accent to-brand-green rounded-2xl mx-auto flex items-center justify-center text-2xl shadow-lg mb-4">
+            ⚡
+        </div>
+        
+        <p class="text-[11px] font-black uppercase tracking-widest text-brand-accent mb-1">Secret Unlocked</p>
+        <h3 class="text-2xl font-black text-white mb-2">Designed & Built by Magesh</h3>
+        <p class="text-xs text-gray-400 mb-6 leading-relaxed">You found the easter egg! Let's connect and build something extraordinary.</p>
+        
+        <a href="https://instagram.com/magesh_00000" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 w-full py-3.5 px-6 rounded-xl font-bold text-sm bg-gradient-to-r from-[#f09433] via-[#dc2743] to-[#bc1888] hover:opacity-95 text-white shadow-lg transition-transform hover:scale-105">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.9 3.9 0 0 0-1.417.923A3.9 3.9 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.298-.048c.851-.04 1.434-.174 1.943-.372a3.9 3.9 0 0 0 1.416-.923c.445-.445.718-.891.923-1.417.197-.509.332-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.299c-.04-.851-.175-1.433-.372-1.941a3.9 3.9 0 0 0-.923-1.417A3.9 3.9 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 7.998 0zm-.717 1.442h.718c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599s.453.546.598.92c.11.281.24.705.275 1.485.039.843.047 1.096.047 3.231s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.5 2.5 0 0 1-.599.919c-.28.28-.546.453-.92.598-.28.11-.704.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.5 2.5 0 0 1-.92-.598 2.5 2.5 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233s.008-2.388.046-3.231c.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92s.546-.453.92-.598c.282-.11.705-.24 1.485-.276.738-.034 1.024-.044 2.515-.045zm4.988 1.328a.96.96 0 1 0 0 1.92.96.96 0 0 0 0-1.92m-4.27 1.122a4.109 4.109 0 1 0 0 8.217 4.109 4.109 0 0 0 0-8.217m0 1.441a2.667 2.667 0 1 1 0 5.334 2.667 2.667 0 0 1 0-5.334"/>
+            </svg>
+            <span>Follow @magesh_00000</span>
+        </a>
+    </div>
+</div>         
+                        
 </body>
 </html>
 
